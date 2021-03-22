@@ -1,0 +1,10 @@
+{
+    "name": "com.kuro.unity-state-machine-graph",
+    "displayName": "UnityStateMachineGraph",
+    "version": "1.0.0",
+    "unity": "2020.3",
+    "description": "",
+    "dependencies": {
+        "com.github.siccity.xnode":"1.8.0"
+    }
+  }
