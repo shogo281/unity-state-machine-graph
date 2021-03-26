@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNodeEditor;
 
-namespace KStateMachine
+namespace KStateMachine.Editor
 {
 	[CustomNodeGraphEditor( typeof( StateGraph ) )]
 	public class StateGraphEditor : NodeGraphEditor
