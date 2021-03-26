@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using XNodeEditor;
 
-namespace KStateMachine.Editor
+namespace KStateMachine
 {
 	[CustomNodeEditor( typeof( CustomStateNode ) )]
 	public class CustomStateNodeEditor : NodeEditor
@@ -24,7 +24,7 @@ namespace KStateMachine.Editor
 
 			protected override AdvancedDropdownItem BuildRoot()
 			{
-				var item = new AdvancedDropdownItem( "State" );
+				var item = new AdvancedDropdownItem( "Scripts" );
 
 				foreach( var typeName in typeNameArray )
 				{
@@ -65,36 +65,9 @@ namespace KStateMachine.Editor
 			}
 		}
 
-		private void DisplayDropdown( CustomStateNode stateNode, Rect rect )
+		public override void OnBodyGUI()
 		{
-			var dropdown = new StateClassNameDropdown( new AdvancedDropdownState(), stateTypeNameDictionary.Keys );
-
-			dropdown.Show( rect );
-
-			dropdown.onceItemSelected += name =>
-			{
-				var type = Type.GetType( stateTypeNameDictionary[name] );
-				var instance = Activator.CreateInstance( type ) as State;
-
-				if( instance == null )
-				{
-					return;
-				}
-
-				Undo.RecordObject( stateNode, "Create state" );
-				stateNode.State = instance;
-			};
-		}
-
-		private void DestroyState( CustomStateNode stateNode )
-		{
-			Undo.RecordObject( stateNode, "Destroy state" );
-			stateNode.State = null;
-		}
-
-		public override void AddContextMenuItems( GenericMenu menu )
-		{
-			base.AddContextMenuItems( menu );
+			base.OnBodyGUI();
 			var stateNode = target as CustomStateNode;
 
 			if( stateNode == null )
@@ -104,20 +77,33 @@ namespace KStateMachine.Editor
 
 			if( stateNode.State == null )
 			{
-				var rect = new Rect( Event.current.mousePosition, Vector2.zero );
-
-				menu.AddItem( new GUIContent( "Create state" ), false, () =>
+				if( GUILayout.Button( "Create state" ) )
 				{
-					DisplayDropdown( stateNode, rect );
-				} );
+					var dropdown = new StateClassNameDropdown( new AdvancedDropdownState(), stateTypeNameDictionary.Keys );
+					dropdown.Show( GUILayoutUtility.GetRect( GetWidth(), 100 ) );
 
+					dropdown.onceItemSelected += name =>
+					{
+						var type = Type.GetType( stateTypeNameDictionary[name] );
+						var instance = Activator.CreateInstance( type ) as State;
+
+						if( instance == null )
+						{
+							return;
+						}
+
+						Undo.RecordObject( stateNode, "create state" );
+						stateNode.State = instance;
+					};
+				}
 			}
-			else if( stateNode.State != null )
+			else
 			{
-				menu.AddItem( new GUIContent( "Destroy state" ), false, () =>
+				if( GUILayout.Button( "Destroy state" ) )
 				{
-					DestroyState( stateNode );
-				} );
+					Undo.RecordObject( stateNode, "destroy state" );
+					stateNode.State = null;
+				}
 			}
 		}
 	}
