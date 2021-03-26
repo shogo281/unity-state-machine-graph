@@ -68,6 +68,8 @@ namespace KStateMachine
 
 			var transition = new Transition( fromStateNode, toStateNode );
 
+
+			connectedTransitions.Add( transition );
 			OnCreateTransition( transition );
 		}
 
@@ -79,61 +81,66 @@ namespace KStateMachine
 
 		private void OnRemoveConnection()
 		{
-			var checkFromToList = new Transitions();
+			//var checkFromToList = new Transitions();
 
-			foreach( var nodePort in Ports )
-			{
-				var connection = nodePort.Connection;
+			//foreach( var nodePort in Ports )
+			//{
+			//	var connection = nodePort.Connection;
 
-				if( connection == null )
-				{
-					continue;
-				}
+			//	if( connection == null )
+			//	{
+			//		continue;
+			//	}
 
-				var other = connection.node as StateNode;
+			//	var other = connection.node as StateNode;
 
-				if( other == null )
-				{
-					continue;
-				}
+			//	if( other == null )
+			//	{
+			//		continue;
+			//	}
 
-				( StateNode from, StateNode to ) fromTo = ( null, null );
+			//	( StateNode from, StateNode to ) fromTo = ( null, null );
 
-				switch( nodePort.Connection.direction )
-				{
-					case NodePort.IO.Input:
-						fromTo = ( this, other );
-						break;
+			//	switch( nodePort.Connection.direction )
+			//	{
+			//		case NodePort.IO.Input:
+			//			fromTo = ( this, other );
+			//			break;
 
-					case NodePort.IO.Output:
-						fromTo = ( other, this );
-						break;
+			//		case NodePort.IO.Output:
+			//			fromTo = ( other, this );
+			//			break;
 
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
+			//		default:
+			//			throw new ArgumentOutOfRangeException();
+			//	}
 
-				checkFromToList.Add( new Transition( fromTo.from, fromTo.to ) );
+			//	checkFromToList.Add( new Transition( fromTo.from, fromTo.to ) );
 
-			}
+			//}
 
-			foreach( var connectedTransition in connectedTransitions )
-			{
+			//foreach( var connectedTransition in connectedTransitions )
+			//{
 
-				if( connectedTransition.From != this )
-				{
-					connectedTransition.From.OnRemoveConnection();
-				}
+			//	if( connectedTransition.From != this )
+			//	{
+			//		connectedTransition.From.OnRemoveConnection();
+			//	}
 
-				if( connectedTransition.To != this )
-				{
-					connectedTransition.To.OnRemoveConnection();
-				}
-			}
+			//	if( connectedTransition.To != this )
+			//	{
+			//		connectedTransition.To.OnRemoveConnection();
+			//	}
+			//}
 
-			var i = connectedTransitions.RemoveAll( t => checkFromToList.Any( u => t.From == u.From && t.To == u.To ) == false );
+			//var i = connectedTransitions.RemoveAll( t =>
+			//{
+			//	var s = checkFromToList.Any( u => t.From == u.From && t.To == u.To ) == false;
+			//	Debug.Log( s );
+			//	return s;
+			//} );
 
-			Debug.Log( i );
+			//Debug.Log( i );
 		}
 
 		protected virtual void OnCreateTransition( Transition transition )
